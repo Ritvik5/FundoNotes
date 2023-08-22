@@ -12,5 +12,17 @@ namespace RepoLayer.Context
         {
         }
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<NoteEntity> Notes { get; set; }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<NoteEntity>()
+        //        .HasOne(n => n.User)
+        //        .WithMany(u => u.Notes)
+        //        .HasForeignKey(u => u.UserId)
+        //        .OnDelete(DeleteBehavior.Cascade);
+
+        //    base.OnModelCreating(modelBuilder);
+        //}
     }
 }

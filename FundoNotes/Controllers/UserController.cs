@@ -1,10 +1,13 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Experimental.System.Messaging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepoLayer.Interface;
 using RepoLayer.Service;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace FundoNotes.Controllers
 {
@@ -65,22 +68,23 @@ namespace FundoNotes.Controllers
                 throw;
             }
         }
-
-        [HttpGet]
-        [Route("Get")]
-        public IActionResult GetUser(GetUserModel model)
+        
+        [HttpPost]
+        [Route("forgotpassword/{email}")]
+        public IActionResult ForgotPass(ForgotPasswordModel model)
         {
             try
             {
-                var result = userBusiness.GetUser(model);
+                var result = userBusiness.ForgotPassword(model);
                 if (result != null)
                 {
-                    return Ok(new { success = true, message = "User is in Database", data = result });
+                    return Ok(new { success = true, message = "Please check your email for password reset instructions" });
                 }
                 else
                 {
-                    return BadRequest(new { success = false, message = "User is Not in Databse" });
+                    return BadRequest(new { success = false, message = "Something went wrong" });
                 }
+                
             }
             catch (System.Exception)
             {
@@ -88,21 +92,43 @@ namespace FundoNotes.Controllers
                 throw;
             }
         }
-
-        [HttpGet]
-        [Route("GetAll")]
-        public IActionResult GetAllUser()
+        [Authorize]
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             try
             {
-                var result = userBusiness.GetAllUsers();
-                if (result != null)
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                bool resetPassword = await userBusiness.ResetPassword(model, email);
+                if (resetPassword)
                 {
-                    return Ok(new { success = true, message = "Sucessful", data = result });
+                    return Ok(new { success = true, message = "Password has been Updated" });
                 }
                 else
                 {
-                    return BadRequest(new { success = false, message = "Databse is empty" });
+                    return BadRequest(new { success = false, message = "Something went wrong" });
+                }
+
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+        [HttpDelete("deleteuser")]
+        public async Task<IActionResult> DeleteUserAsync(DeleteUserModel model)
+        {
+            try
+            {
+                bool deleteUser = await userBusiness.DeleteUser(model);
+                if (deleteUser)
+                {
+                    return Ok(new { success = true, message = "User with " + model.Email + " deleted" });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "User with " + model.Email + " can't be deleted" });
                 }
             }
             catch (System.Exception)

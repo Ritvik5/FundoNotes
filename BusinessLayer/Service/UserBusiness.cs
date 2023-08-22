@@ -5,6 +5,7 @@ using RepoLayer.Interface;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.Service
 {
@@ -53,11 +54,11 @@ namespace BusinessLayer.Service
             }
         }
 
-        public string GenerateJWTToken(string email)
+        public string GenerateJWTToken(string email, long userId)
         {
             try
             {
-                return userRepo.GenerateJWTToken(email);
+                return userRepo.GenerateJWTToken(email,userId);
             }
             catch (Exception)
             {
@@ -78,6 +79,43 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+        public string ForgotPassword(ForgotPasswordModel model)
+        {
+            try
+            {
+               return userRepo.ForgotPassword(model);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<bool> ResetPassword(ResetPasswordModel model, string email) 
+        {
+            try
+            {
+                return await userRepo.ResetPassword(model, email);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<bool> DeleteUser(DeleteUserModel model)
+        {
+            try
+            {
+                return await userRepo.DeleteUser(model);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }
 

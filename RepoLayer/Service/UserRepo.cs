@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RepoLayer.Context;
@@ -11,7 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
-
+using System.Threading.Tasks;
 
 namespace RepoLayer.Service
 {
@@ -100,7 +101,7 @@ namespace RepoLayer.Service
             }
         }
 
-        public string GenerateJWTToken(string email)
+        public string GenerateJWTToken(string email,long userId)
         {
             try
             {
@@ -113,7 +114,8 @@ namespace RepoLayer.Service
                     Subject = new System.Security.Claims.ClaimsIdentity(
                         new Claim[]
                         {
-                        new Claim(ClaimTypes.Email,email)
+                        new Claim(ClaimTypes.Email,email),
+                        new Claim("userId",userId.ToString())
                         }),
                     Expires = DateTime.Now.AddMinutes(5),
                     SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
@@ -121,7 +123,7 @@ namespace RepoLayer.Service
 
                 var token = tokenhandler.CreateToken(tokenDescriptions);
                 return tokenhandler.WriteToken(token);
-            }
+            }   
             catch (Exception ex)
             {
 
@@ -144,7 +146,7 @@ namespace RepoLayer.Service
                 string decryptedPassword = DecryptedPassword(userEntity.Password);
                 if(decryptedPassword == userLoginModel.Password)
                 {
-                    var token = GenerateJWTToken(userLoginModel.Email);
+                    var token = GenerateJWTToken(userLoginModel.Email,userEntity.UserId);
                     return token;
                 }
                 else
@@ -203,17 +205,64 @@ namespace RepoLayer.Service
                 throw;
             }
         }
-
-        public void ForgotPassword(ForgotPasswordModel model)
+        public string ForgotPassword(ForgotPasswordModel model)
         {
             try
             {
-                var user = fundoContext.Users.SingleOrDefault(x => x.Email == model.Email);
+                UserEntity user = new UserEntity();
+                user = fundoContext.Users.SingleOrDefault(x => x.Email == model.Email);
                 if(user == null)
                 {
-                    return ;
+                    return null;
                 }
-                var token = GenerateJWTToken(model.Email);
+                var token = GenerateJWTToken(model.Email,user.UserId);
+                MsmqModel msmqModel = new MsmqModel();
+                msmqModel.sendData2Queue(token);
+                return token;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<bool> ResetPassword(ResetPasswordModel model,string email)
+        {
+            try
+            {
+                var resetPassword = await fundoContext.Users.SingleOrDefaultAsync(x => x.Email == email);
+                if(resetPassword != null && model.NewPassword == model.ConfirmPassword)
+                {
+                    resetPassword.Password = EncryptedPassword(model.NewPassword);
+                    await fundoContext.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<bool> DeleteUser(DeleteUserModel model)
+        {
+            try
+            {
+                var deleteUser = await fundoContext.Users.SingleOrDefaultAsync(x=> x.Email == model.Email);
+                if(deleteUser != null)
+                {
+                    fundoContext.Users.Remove(deleteUser);
+                    await fundoContext.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {
@@ -222,6 +271,5 @@ namespace RepoLayer.Service
             }
         }
 
-        
     }
 }
