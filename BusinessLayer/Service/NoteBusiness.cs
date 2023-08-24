@@ -57,11 +57,11 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-        public Task DeleteNote(long noteId, long userId)
+        public async Task DeleteNote(long noteId, long userId)
         {
             try
             {
-                return noteRepo.DeleteNote(noteId, userId);   
+                await noteRepo.DeleteNote(noteId, userId);   
             }
             catch (Exception)
             {

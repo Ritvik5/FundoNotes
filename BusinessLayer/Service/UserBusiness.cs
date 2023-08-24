@@ -17,43 +17,17 @@ namespace BusinessLayer.Service
             this.userRepo = userRepo;
         }
 
-        public UserEntity UserRegister(UserRegistrationModel model)
+        public async Task<UserEntity> UserRegister(UserRegistrationModel model)
         {
             try
             {
-                return userRepo.UserRegister(model);
+                return await userRepo.UserRegister(model);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public UserEntity GetUser(GetUserModel model)
-        {
-            try
-            {
-                return userRepo.GetUser(model);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public List<UserEntity> GetAllUsers()
-        {
-            try
-            {
-                return userRepo.GetAlluser();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
         public string GenerateJWTToken(string email, long userId)
         {
             try
@@ -67,11 +41,11 @@ namespace BusinessLayer.Service
             }
         }
 
-        public string LogIn(UserLoginModel loginModel)
+        public async Task<LoginResultModel> LogIn(UserLoginModel userLoginModel)
         {
             try
             {
-                return userRepo.LogIn(loginModel);
+                return await userRepo.LogIn(userLoginModel);
             }
             catch (Exception)
             {
@@ -79,11 +53,11 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-        public string ForgotPassword(ForgotPasswordModel model)
+        public async Task<string> ForgotPassword(ForgotPasswordModel model)
         {
             try
             {
-               return userRepo.ForgotPassword(model);
+               return await userRepo.ForgotPassword(model);
             }
             catch (Exception)
             {

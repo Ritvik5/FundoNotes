@@ -27,7 +27,7 @@ namespace RepoLayer.Service
             this.configuration = configuration;
         }
 
-        public UserEntity UserRegister(UserRegistrationModel model)
+        public async Task<UserEntity> UserRegister(UserRegistrationModel model)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace RepoLayer.Service
                 userEntity.Password = EncryptedPassword(model.Password);
 
                 fundoContext.Users.Add(userEntity);
-                fundoContext.SaveChanges();
+                await fundoContext.SaveChangesAsync();
 
                 if(userEntity != null)
                 {
@@ -54,53 +54,6 @@ namespace RepoLayer.Service
                 throw ex;
             }
         }
-
-        public UserEntity GetUser(GetUserModel getUserModel)
-        {
-            try
-            {
-                UserEntity userEntity = new UserEntity();
-                userEntity = fundoContext.Users.FirstOrDefault(u => u.UserId == getUserModel.UserId);
-
-                if (userEntity != null)
-                {
-                    return userEntity;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
-        public List<UserEntity> GetAlluser()
-        {
-            try
-            {
-                List<UserEntity> users = new List<UserEntity>();
-
-                users = fundoContext.Users.ToList();
-
-                if (users == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return users;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public string GenerateJWTToken(string email,long userId)
         {
             try
@@ -131,12 +84,12 @@ namespace RepoLayer.Service
             }
         }
 
-        public string LogIn(UserLoginModel userLoginModel)
+        public async Task<LoginResultModel> LogIn(UserLoginModel userLoginModel)
         {
             try
             {
                 UserEntity userEntity = new UserEntity();
-                userEntity = fundoContext.Users.FirstOrDefault(u => u.Email  == userLoginModel.Email);
+                userEntity = await fundoContext.Users.FirstOrDefaultAsync(u => u.Email  == userLoginModel.Email);
 
                 if(userEntity == null)
                 {
@@ -147,7 +100,12 @@ namespace RepoLayer.Service
                 if(decryptedPassword == userLoginModel.Password)
                 {
                     var token = GenerateJWTToken(userLoginModel.Email,userEntity.UserId);
-                    return token;
+                    LoginResultModel loginResult = new LoginResultModel
+                    {
+                        Token = token,
+                        User = userEntity,
+                    };
+                    return loginResult;
                 }
                 else
                 {
@@ -205,12 +163,12 @@ namespace RepoLayer.Service
                 throw;
             }
         }
-        public string ForgotPassword(ForgotPasswordModel model)
+        public async Task<string> ForgotPassword(ForgotPasswordModel model)
         {
             try
             {
                 UserEntity user = new UserEntity();
-                user = fundoContext.Users.SingleOrDefault(x => x.Email == model.Email);
+                user = await fundoContext.Users.SingleOrDefaultAsync(x => x.Email == model.Email);
                 if(user == null)
                 {
                     return null;

@@ -23,7 +23,7 @@ namespace FundoNotes.Controllers
             this.noteBusiness = noteBusiness;
         }
         [Authorize]
-        [HttpPost("createnote")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateNote(CreateNoteModel model)
         {
             try
@@ -47,7 +47,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("getnotefor")]
+        [HttpGet]
         public async Task<IActionResult> GetNoteForParticularUser()
         {
             try
@@ -72,7 +72,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("updateNote")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateNote(UpdateNoteModel model,long noteId)
         {
             try
@@ -96,7 +96,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpDelete("deleteNote")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteNote(long noteId)
         {
             try
@@ -122,7 +122,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("isArchive")]
+        [HttpPut("Archive")]
         public async Task<IActionResult> ArchiveNote(long noteId)
         {
             try
@@ -146,7 +146,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPut("isPin")]
+        [HttpPut("Pin")]
         public async Task<IActionResult> PinNote(long noteId)
         {
             try
@@ -170,7 +170,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("isRemainder")]
+        [HttpPut("Remainder")]
         public async Task<IActionResult> ReminderNote(long noteId)
         {
             try
@@ -194,7 +194,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("isTrash")]
+        [HttpPut("Trash")]
         public async Task<IActionResult> TrashNote(long noteId)
         {
             try
@@ -218,7 +218,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("newColour")]
+        [HttpPost("Colour")]
         public async Task<IActionResult> ChangeBackgroundColour(long noteId,string colour)
         {
             try
@@ -242,7 +242,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("imageUpload")]
+        [HttpPost("image")]
         public async Task<IActionResult> ImageUpload(long noteId,IFormFile image)
         {
             try
@@ -252,7 +252,7 @@ namespace FundoNotes.Controllers
                 var imageUpload = await noteBusiness.UploadImage(noteId, userId, image);
                 if(imageUpload != null)
                 {
-                    return Ok(new { success = true, message = "Image uploaded sucessfully" });
+                    return Ok(new { success = true, message = "Image uploaded sucessfully",data=imageUpload });
                 }
                 else
                 {

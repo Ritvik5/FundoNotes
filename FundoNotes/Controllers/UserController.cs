@@ -16,20 +16,17 @@ namespace FundoNotes.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserBusiness userBusiness;
-
         public UserController(IUserBusiness userBusiness)
         {
             this.userBusiness = userBusiness;
         }
-
-
         [HttpPost]
-        [Route("Register")]
-        public IActionResult UserRegister(UserRegistrationModel model)
+        [Route("register")]
+        public async Task<IActionResult> UserRegister(UserRegistrationModel model)
         {
             try
             {
-                var result = userBusiness.UserRegister(model);
+                var result = await userBusiness.UserRegister(model);
                 if (result != null)
                 {
                     return Ok(new { success = true, message = "User Registeration Sucessful", data = result });
@@ -45,14 +42,13 @@ namespace FundoNotes.Controllers
                 throw;
             }
         }
-
         [HttpPost]
         [Route("Login")]
-        public IActionResult UserLogin(UserLoginModel userLoginModel)
+        public async Task<IActionResult> UserLogin(UserLoginModel userLoginModel)
         {
             try
             {
-                var result = userBusiness.LogIn(userLoginModel);
+                var result = await userBusiness.LogIn(userLoginModel);
                 if (result == null)
                 {
                     return Unauthorized(new { success = false, message = "User is not Registered" });
@@ -68,7 +64,6 @@ namespace FundoNotes.Controllers
                 throw;
             }
         }
-        
         [HttpPost]
         [Route("forgotpassword/{email}")]
         public IActionResult ForgotPass(ForgotPasswordModel model)
@@ -121,7 +116,7 @@ namespace FundoNotes.Controllers
         {
             try
             {
-                bool deleteUser = await userBusiness.DeleteUser(model);
+                bool deleteUser = await userBusiness.DeleteUser(model); 
                 if (deleteUser)
                 {
                     return Ok(new { success = true, message = "User with " + model.Email + " deleted" });

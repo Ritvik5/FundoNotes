@@ -283,7 +283,8 @@ namespace RepoLayer.Service
                         Transformation = new Transformation().Crop("fit").Gravity("face")
                     };
                     var uploadResult = await cloudinary.UploadAsync(uploadParams);
-                    return "Image uploaded Successfully";
+                    string secureurl = uploadResult.SecureUrl.ToString();
+                    return "Image Uploaded Successfully.Url for image: "+ secureurl;
                 }
                 else
                 {

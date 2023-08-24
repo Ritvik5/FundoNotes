@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonLayer.Model
+namespace RepoLayer.Entities
 {
-    public class Tokens
+    public class LoginResultModel
     {
         public string Token { get; set; }
-        public string RefreshToken { get; set; }
-         
+        public UserEntity User { get; set; }
     }
 }

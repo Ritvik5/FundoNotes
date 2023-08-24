@@ -9,12 +9,10 @@ namespace BusinessLayer.Interface
 {
     public interface IUserBusiness
     {
-        public UserEntity UserRegister(UserRegistrationModel model);
-        public UserEntity GetUser(GetUserModel getUserModel);
-        public List<UserEntity> GetAllUsers();
-        public string LogIn(UserLoginModel loginModel);
+        Task<UserEntity> UserRegister(UserRegistrationModel model);
+        Task<LoginResultModel> LogIn(UserLoginModel userLoginModel);
         public string GenerateJWTToken(string email,long userId);
-        public string ForgotPassword(ForgotPasswordModel model);
+        Task<string> ForgotPassword(ForgotPasswordModel model);
         Task<bool> ResetPassword(ResetPasswordModel model, string email);
         Task<bool> DeleteUser(DeleteUserModel model);
     }

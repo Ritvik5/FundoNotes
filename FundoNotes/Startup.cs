@@ -80,6 +80,10 @@ namespace FundoNotes
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<INoteBusiness, NoteBusiness>();
             services.AddTransient<INoteRepo, NoteRepo>();
+            services.AddTransient<ICollabBusiness, CollabBusiness>();
+            services.AddTransient<ICollabRepo, CollabRepo>();
+            services.AddTransient<ILabelRepo,LabelRepo>();
+            services.AddTransient<ILabelBusiness,LabelBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
