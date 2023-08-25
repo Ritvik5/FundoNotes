@@ -26,13 +26,6 @@ namespace RepoLayer.Service
         {
             this.fundoContext = fundoContext;
             this.configuration = configuration;
-
-            Account cloudinaryAccount = new Account(
-                    configuration["Cloudinary:CloudName"],
-                    configuration["Cloudinary:ApiKey"],
-                    configuration["Cloudinary:ApiSecret"]);
-
-            cloudinary = new Cloudinary(cloudinaryAccount);
         }
 
         public async Task<NoteEntity> CreateNote(CreateNoteModel model,long userId)
@@ -274,9 +267,15 @@ namespace RepoLayer.Service
         {
             try
             {
-                var user = fundoContext.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
+                var user = await fundoContext.Notes.FirstOrDefaultAsync(u => u.NoteId == noteId && u.UserId == userId);
                 if (user != null)
                 {
+                    Account cloudinaryAccount = new Account(
+                    configuration["Cloudinary:CloudName"],
+                    configuration["Cloudinary:ApiKey"],
+                    configuration["Cloudinary:ApiSecret"]);
+
+                    Cloudinary cloudinary = new Cloudinary(cloudinaryAccount);
                     var uploadParams = new ImageUploadParams
                     {
                         File = new FileDescription(image.FileName, image.OpenReadStream()),

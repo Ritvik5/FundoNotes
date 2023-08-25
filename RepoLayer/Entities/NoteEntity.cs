@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace RepoLayer.Entities
 {
@@ -22,6 +23,7 @@ namespace RepoLayer.Entities
         public DateTime UpdatedTime { get; set; }
         [ForeignKey("User")]   // foriegn key attribute
         public long UserId { get; set; }
+        [JsonIgnore]
         public UserEntity User { get; set; } // Navigation Property for user
     }
 }

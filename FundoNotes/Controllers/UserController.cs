@@ -88,7 +88,7 @@ namespace FundoNotes.Controllers
             }
         }
         [Authorize]
-        [HttpPost("resetpassword")]
+        [HttpPut("resetpassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             try

@@ -66,7 +66,6 @@ namespace RepoLayer.Service
                 throw;
             }
         }
-
         public async Task<List<CollabEntity>> GetAllCollabByNoteId(long noteId,long userId)
         {
             try
