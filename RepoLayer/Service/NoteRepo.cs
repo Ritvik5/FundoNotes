@@ -26,7 +26,12 @@ namespace RepoLayer.Service
             this.fundoContext = fundoContext;
             this.configuration = configuration;
         }
-
+        /// <summary>
+        /// Create New Note
+        /// </summary>
+        /// <param name="model"> New Note Info</param>
+        /// <param name="userId"> User Id </param>
+        /// <returns> Note Info </returns>
         public async Task<NoteEntity> CreateNote(CreateNoteModel model,long userId)
         {
             try
@@ -60,10 +65,10 @@ namespace RepoLayer.Service
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -73,10 +78,10 @@ namespace RepoLayer.Service
             {
                 return await fundoContext.Notes.Where(u => u.UserId == userId).Include(u=>u.User).ToListAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -104,10 +109,10 @@ namespace RepoLayer.Service
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task DeleteNote(long noteId,long userId)
@@ -118,10 +123,10 @@ namespace RepoLayer.Service
                 fundoContext.Notes.Remove(user);
                 await fundoContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> ArchiveNote(long noteId,long userId)
@@ -147,10 +152,10 @@ namespace RepoLayer.Service
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> PinNote(long noteId,long userId)
@@ -176,10 +181,10 @@ namespace RepoLayer.Service
                 await fundoContext.SaveChangesAsync();
                 return await fundoContext.Notes.Where(n => n.NoteId==noteId).FirstOrDefaultAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> ReminderNote(long noteId,long userId)
@@ -205,10 +210,10 @@ namespace RepoLayer.Service
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> TrashNote(long noteId,long userId)
@@ -234,10 +239,10 @@ namespace RepoLayer.Service
                 await fundoContext.SaveChangesAsync();
                 return await fundoContext.Notes.Where(n => n.NoteId == noteId).FirstOrDefaultAsync(); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> BackgroundColour(long noteId,long userId,string colour)
@@ -256,10 +261,10 @@ namespace RepoLayer.Service
                 await fundoContext.SaveChangesAsync();
                 return await fundoContext.Notes.Where(n => n.NoteId==noteId).FirstOrDefaultAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<string> UploadImage(long noteId,long userId, IFormFile image)
@@ -289,10 +294,10 @@ namespace RepoLayer.Service
                     return "Image can't uploaded";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }

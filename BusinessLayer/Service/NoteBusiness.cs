@@ -25,10 +25,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.CreateNote(model, userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -38,10 +38,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.GetAll(userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -51,10 +51,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.UpdateNote(model, noteId, userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task DeleteNote(long noteId, long userId)
@@ -63,10 +63,10 @@ namespace BusinessLayer.Service
             {
                 await noteRepo.DeleteNote(noteId, userId);   
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> ArchiveNote(long noteId, long userId)
@@ -75,10 +75,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.ArchiveNote(noteId, userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> PinNote(long noteId, long userId)
@@ -87,10 +87,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.PinNote(noteId, userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> ReminderNote(long noteId, long userId)
@@ -99,10 +99,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.ReminderNote(noteId, userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> TrashNote(long noteId, long userId)
@@ -111,10 +111,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.TrashNote(noteId, userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<NoteEntity> BackgroundColour(long noteId, long userId, string colour)
@@ -123,10 +123,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.BackgroundColour(noteId, userId, colour);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<string> UploadImage(long noteId, long userId, IFormFile image)
@@ -135,10 +135,10 @@ namespace BusinessLayer.Service
             {
                 return await noteRepo.UploadImage(noteId, userId, image);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }

@@ -53,10 +53,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Note cannot be created"});
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -78,10 +78,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Can't fetch the results" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -102,10 +102,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -128,10 +128,10 @@ namespace FundoNotes.Controllers
                 
                 
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -152,10 +152,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -176,10 +176,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -200,10 +200,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -224,10 +224,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -248,10 +248,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [Authorize]
@@ -272,10 +272,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         [HttpGet("redis")]
@@ -304,10 +304,10 @@ namespace FundoNotes.Controllers
                 }
                 return Ok(new { success = true, message = "All Notes", data = noteList });
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }
