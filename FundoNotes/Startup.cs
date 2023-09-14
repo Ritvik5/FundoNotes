@@ -1,6 +1,7 @@
 using BusinessLayer.Interface;
 using BusinessLayer.Service;
 using CommonLayer.Model;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using RepoLayer.Context;
 using RepoLayer.Interface;
 using RepoLayer.Service;
+using System;
 using System.Text;
 
 namespace FundoNotes
@@ -29,12 +31,18 @@ namespace FundoNotes
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configuring Entity Framework Core to use Sql Server
             services.AddDbContext<FundoContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:FundoNoteDB"]));
+
+            // Configuring caching using Redis cache and in memory cache
+
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = "localhost:6379";
             });
             services.AddMemoryCache();
+
+            // Configuring JWT(JSON Web Token) authentication
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,7 +62,9 @@ namespace FundoNotes
                     IssuerSigningKey = new SymmetricSecurityKey(Key)
                 };
             });
-            services.AddControllers();
+
+            // Swagger Documentation and Authentication using JWT(JSON Web Token). 
+
             services.AddSwaggerGen(c =>
             {
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -81,6 +91,26 @@ namespace FundoNotes
                     }
                 });
             });
+
+            // Configure and Adds MassTransit as a messaging framework. It is used to communicate through messaging system like RabbitMQ.
+
+            services.AddMassTransit(x =>
+            {
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+                {
+                    config.UseHealthCheck(provider);
+                    config.Host(new Uri("rabbitmq://localhost"), h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+                }));
+            });
+            services.AddMassTransitHostedService();
+
+            // Configure and add support to controller.
+            services.AddControllers();
+
             services.AddTransient<IUserBusiness, UserBusiness>();
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<INoteBusiness, NoteBusiness>();

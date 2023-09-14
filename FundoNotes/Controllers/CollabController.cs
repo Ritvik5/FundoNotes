@@ -1,36 +1,41 @@
 ﻿using BusinessLayer.Interface;
+using CommonLayer.Model;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepoLayer.Context;
 using RepoLayer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FundoNotes.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CollabController : ControllerBase
     {
         private readonly ICollabBusiness collabBusiness;
-        private readonly FundoContext fundoContext;
+        private readonly IBus bus;
 
-        public CollabController(ICollabBusiness collabBusiness,FundoContext fundoContext)
+        public CollabController(ICollabBusiness collabBusiness,IBus bus)
         {
             this.collabBusiness = collabBusiness;
-            this.fundoContext = fundoContext;
+            this.bus = bus;
         }
-        [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> AddCollab(string collabEmail,long noteId)
+        public async Task<IActionResult> AddCollab(CollabEmailModel emailModel,long noteId)
         {
             try
             {
                 var userIdClaim = User.FindFirst("userId");
                 long userId = long.Parse(userIdClaim.Value);
-                var addCollab = await collabBusiness.AddCollab(collabEmail,noteId,userId);
+                var addCollab = await collabBusiness.AddCollab(emailModel, noteId,userId);
                 if(addCollab != null)
                 {
                     return Ok(new { success = true, message = "New Collaborator added.",data = addCollab });
@@ -46,7 +51,6 @@ namespace FundoNotes.Controllers
                 throw;
             }
         }
-        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> DeleteCollab(long collabId,long noteId)
         {
@@ -70,7 +74,6 @@ namespace FundoNotes.Controllers
                 throw;
             }
         }
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllColaborator(long noteId)
         {
@@ -87,6 +90,39 @@ namespace FundoNotes.Controllers
                 else
                 {
                     return BadRequest(new { success = false, message = "Failed to fetch all Collaborator.", data = result });
+                }
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+        [HttpPost("send")]
+        public async Task<IActionResult> SendCollabMail(CollabEmailModel emailModel,long noteId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("userId");
+                long userId = long.Parse(userIdClaim.Value);
+                var result = await collabBusiness.AddCollab(emailModel,noteId,userId);
+
+                if(result != null)
+                {
+                    // RabbitMQ Publisher
+
+                    Uri uri = new Uri("rabbitmq://localhost/mailToConsumer");
+                    var endPoint = await bus.GetSendEndpoint(uri);
+                    await endPoint.Send(result);
+
+
+                    SendColabMail colabMail = new SendColabMail();
+                    colabMail.EmailService(emailModel.Email);
+                    return Ok(new { success = true,message ="Mail send to consumer.", data = result });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Mail can't be send" });
                 }
             }
             catch (System.Exception)

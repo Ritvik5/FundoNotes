@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Interface;
+using CommonLayer.Model;
 using RepoLayer.Entities;
 using RepoLayer.Interface;
 using RepoLayer.Service;
@@ -16,11 +17,11 @@ namespace BusinessLayer.Service
 		{
 			this.collabRepo = collabRepo;
 		}
-        public async Task<CollabEntity> AddCollab(string collabEmail, long noteId, long userId)
+        public async Task<CollabEntity> AddCollab(CollabEmailModel emailModel, long noteId, long userId)
         {
 			try
 			{
-				return await collabRepo.AddCollab(collabEmail, noteId, userId);
+				return await collabRepo.AddCollab(emailModel, noteId, userId);
 			}
 			catch (Exception)
 			{

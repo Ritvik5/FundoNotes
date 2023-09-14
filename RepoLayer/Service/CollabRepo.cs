@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommonLayer.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RepoLayer.Context;
 using RepoLayer.Entities;
@@ -22,21 +23,17 @@ namespace RepoLayer.Service
             this.fundoContext = fundoContext;
         }
 
-        public async Task<CollabEntity> AddCollab(string collabEmail, long noteId, long userId)
+        public async Task<CollabEntity> AddCollab(CollabEmailModel emailModel, long noteId, long userId)
         {
             try
             {
-                var user = fundoContext.Users.FirstOrDefault(u => u.UserId == userId);
-                var note = fundoContext.Notes.FirstOrDefault(n => n.NoteId == noteId);
-                CollabEntity collab = new CollabEntity
-                {
-                    User = user,
-                    Note = note
-                };
-                collab.CollabEmail = collabEmail;
-                fundoContext.Collab.Add(collab);
+                CollabEntity collabEntity = new CollabEntity();
+                collabEntity.UserId = userId;
+                collabEntity.NoteId = noteId;
+                collabEntity.CollabEmail = emailModel.Email;
+                await fundoContext.Collab.AddAsync(collabEntity);
                 await fundoContext.SaveChangesAsync();
-                return collab;
+                return collabEntity;
             }
             catch (Exception)
             {
