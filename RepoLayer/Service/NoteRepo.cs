@@ -20,7 +20,6 @@ namespace RepoLayer.Service
     {
         private readonly FundoContext fundoContext;
         private readonly IConfiguration configuration;
-        private readonly Cloudinary cloudinary;
 
         public NoteRepo(FundoContext fundoContext, IConfiguration configuration)
         {

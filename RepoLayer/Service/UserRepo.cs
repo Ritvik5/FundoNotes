@@ -21,14 +21,16 @@ namespace RepoLayer.Service
         private readonly FundoContext fundoContext;
         private readonly IConfiguration configuration;
 
-
-
         public UserRepo(FundoContext fundoContext, IConfiguration configuration)
         {
             this.fundoContext = fundoContext;
             this.configuration = configuration;
         }
-
+        /// <summary>
+        /// User Registeration
+        /// </summary>
+        /// <param name="model">Registration Model</param>
+        /// <returns>User Info</returns>
         public async Task<UserEntity> UserRegister(UserRegistrationModel model)
         {
             try
@@ -56,6 +58,12 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Generating JWT(JSON Web Token)
+        /// </summary>
+        /// <param name="email"> Email Id of User</param>
+        /// <param name="userId"> User Id </param>
+        /// <returns></returns>
         public string GenerateJWTToken(string email,long userId)
         {
             try
@@ -85,7 +93,11 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-
+        /// <summary>
+        /// User Login 
+        /// </summary>
+        /// <param name="userLoginModel"> Login Info </param>
+        /// <returns> User Info with JWT Token </returns>
         public async Task<LoginResultModel> LogIn(UserLoginModel userLoginModel)
         {
             try
@@ -121,7 +133,11 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-
+        /// <summary>
+        /// Encrypting User Password 
+        /// </summary>
+        /// <param name="password"> user password </param>
+        /// <returns> Encrypted Password </returns>
         public static string EncryptedPassword(string password)
         {
             try
@@ -143,7 +159,11 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-
+        /// <summary>
+        /// Decrypting user's encrypted password
+        /// </summary>
+        /// <param name="password"> Encrypted Password </param>
+        /// <returns> Decrypted Password </returns>
         public static string DecryptedPassword(string password)
         {
             try
@@ -165,17 +185,22 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<string> ForgotPassword(ForgotPasswordModel model)
+        /// <summary>
+        /// Forgot Password
+        /// </summary>
+        /// <param name="forgotPassword"> Email Id </param>
+        /// <returns> Send JWT Token </returns>
+        public async Task<string> ForgotPassword(ForgotPasswordModel forgotPassword)
         {
             try
             {
                 UserEntity user = new UserEntity();
-                user = await fundoContext.Users.SingleOrDefaultAsync(x => x.Email == model.Email);
+                user = await fundoContext.Users.SingleOrDefaultAsync(x => x.Email == forgotPassword.Email);
                 if(user == null)
                 {
                     return null;
                 }
-                var token = GenerateJWTToken(model.Email,user.UserId);
+                var token = GenerateJWTToken(forgotPassword.Email,user.UserId);
                 MsmqModel msmqModel = new MsmqModel();
                 msmqModel.sendData2Queue(token);
                 return token;
@@ -186,14 +211,20 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<bool> ResetPassword(ResetPasswordModel model,string email)
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="resetPassword"> ResetPassword Info </param>
+        /// <param name="email"> Email Id Of User</param>
+        /// <returns> Boolena Value </returns>
+        public async Task<bool> ResetPassword(ResetPasswordModel resetPassword,string email)
         {
             try
             {
-                var resetPassword = await fundoContext.Users.SingleOrDefaultAsync(x => x.Email == email);
-                if(resetPassword != null && model.NewPassword == model.ConfirmPassword)
+                var user = await fundoContext.Users.SingleOrDefaultAsync(x => x.Email == email);
+                if(user != null && resetPassword.NewPassword == resetPassword.ConfirmPassword)
                 {
-                    resetPassword.Password = EncryptedPassword(model.NewPassword);
+                    user.Password = EncryptedPassword(resetPassword.NewPassword);
                     await fundoContext.SaveChangesAsync();
                     return true;
                 }
@@ -208,6 +239,11 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Deleting User
+        /// </summary>
+        /// <param name="model"> Email Id Of User </param>
+        /// <returns> Boolean Value </returns>
         public async Task<bool> DeleteUser(DeleteUserModel model)
         {
             try

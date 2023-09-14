@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace FundoNotes.Controllers
 {
+    /// <summary>
+    /// User Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -20,6 +23,11 @@ namespace FundoNotes.Controllers
         {
             this.userBusiness = userBusiness;
         }
+        /// <summary>
+        /// User Registration
+        /// </summary>
+        /// <param name="model"> User Info for new user </param>
+        /// <returns> SMD(Status,Message,Data) Format </returns>
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> UserRegister(UserRegistrationModel model)
@@ -42,6 +50,11 @@ namespace FundoNotes.Controllers
                 throw new System.Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// User Login
+        /// </summary>
+        /// <param name="userLoginModel"> Login info </param>
+        /// <returns> SMD(Status,Message,Data) Format </returns>
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> UserLogin(UserLoginModel userLoginModel)
@@ -64,6 +77,11 @@ namespace FundoNotes.Controllers
                 throw new System.Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Forget Password
+        /// </summary>
+        /// <param name="model"> Forget Password model </param>
+        /// <returns> SMD(Status,Message,Data) Format </returns>
         [HttpPost]
         [Route("forgotpassword/{email}")]
         public IActionResult ForgotPass(ForgotPasswordModel model)
@@ -87,6 +105,11 @@ namespace FundoNotes.Controllers
                 throw new System.Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Reset Password
+        /// </summary>
+        /// <param name="model"> reset password model </param>
+        /// <returns> SMD(Status,Message,Data) Format </returns>
         [Authorize]
         [HttpPut("resetpassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
@@ -111,6 +134,11 @@ namespace FundoNotes.Controllers
                 throw new System.Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Deleting User
+        /// </summary>
+        /// <param name="model"> email id of user </param>
+        /// <returns> SMD(Status,Message,Data) Format </returns>
         [HttpDelete("deleteuser")]
         public async Task<IActionResult> DeleteUserAsync(DeleteUserModel model)
         {
