@@ -53,7 +53,7 @@ namespace RepoLayer.Service
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
         public string GenerateJWTToken(string email,long userId)
@@ -82,7 +82,7 @@ namespace RepoLayer.Service
             catch (Exception ex)
             {
 
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -118,7 +118,7 @@ namespace RepoLayer.Service
             catch (Exception ex)
             {
 
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -137,10 +137,10 @@ namespace RepoLayer.Service
                     return encrytedPassword;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -159,10 +159,10 @@ namespace RepoLayer.Service
                     return decryptedPassword;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<string> ForgotPassword(ForgotPasswordModel model)
@@ -180,10 +180,10 @@ namespace RepoLayer.Service
                 msmqModel.sendData2Queue(token);
                 return token;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<bool> ResetPassword(ResetPasswordModel model,string email)
@@ -202,10 +202,10 @@ namespace RepoLayer.Service
                     return false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<bool> DeleteUser(DeleteUserModel model)
@@ -224,10 +224,10 @@ namespace RepoLayer.Service
                     return false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 

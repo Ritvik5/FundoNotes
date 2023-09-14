@@ -23,9 +23,9 @@ namespace BusinessLayer.Service
             {
                 return await userRepo.UserRegister(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public string GenerateJWTToken(string email, long userId)
@@ -34,10 +34,10 @@ namespace BusinessLayer.Service
             {
                 return userRepo.GenerateJWTToken(email,userId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -47,10 +47,10 @@ namespace BusinessLayer.Service
             {
                 return await userRepo.LogIn(userLoginModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<string> ForgotPassword(ForgotPasswordModel model)
@@ -59,10 +59,10 @@ namespace BusinessLayer.Service
             {
                return await userRepo.ForgotPassword(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<bool> ResetPassword(ResetPasswordModel model, string email) 
@@ -71,10 +71,10 @@ namespace BusinessLayer.Service
             {
                 return await userRepo.ResetPassword(model, email);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
         public async Task<bool> DeleteUser(DeleteUserModel model)
@@ -83,10 +83,10 @@ namespace BusinessLayer.Service
             {
                 return await userRepo.DeleteUser(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 

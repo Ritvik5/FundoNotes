@@ -36,10 +36,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "User Registeration Unsucessful" });
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
 
-                throw;
+                throw new System.Exception(ex.Message);
             }
         }
         [HttpPost]
@@ -58,10 +58,10 @@ namespace FundoNotes.Controllers
                     return Ok(new { success = true, message = "User Login Successfully", data = result });
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
 
-                throw;
+                throw new System.Exception(ex.Message);
             }
         }
         [HttpPost]
@@ -81,10 +81,10 @@ namespace FundoNotes.Controllers
                 }
                 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
 
-                throw;
+                throw new System.Exception(ex.Message);
             }
         }
         [Authorize]
@@ -105,10 +105,10 @@ namespace FundoNotes.Controllers
                 }
 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
 
-                throw;
+                throw new System.Exception(ex.Message);
             }
         }
         [HttpDelete("deleteuser")]
@@ -126,10 +126,10 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "User with " + model.Email + " can't be deleted" });
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
 
-                throw;
+                throw new System.Exception(ex.Message);
             }
         }
     }
