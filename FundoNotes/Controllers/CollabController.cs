@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace FundoNotes.Controllers
 {
+    /// <summary>
+    /// Collab Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -28,6 +31,12 @@ namespace FundoNotes.Controllers
             this.collabBusiness = collabBusiness;
             this.bus = bus;
         }
+        /// <summary>
+        /// Add Collab
+        /// </summary>
+        /// <param name="emailModel"> Email for collab </param>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Success,Message,Data(Collab Info)) </returns>
         [HttpPost("add")]
         public async Task<IActionResult> AddCollab(CollabEmailModel emailModel,long noteId)
         {
@@ -45,12 +54,17 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Something went wrong", data = addCollab });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Deleting Collab
+        /// </summary>
+        /// <param name="collabId"> Collab Id </param>
+        /// <param name="noteId"> User Id </param>
+        /// <returns>SMD(Success,Message) </returns>
         [HttpDelete]
         public async Task<IActionResult> DeleteCollab(long collabId,long noteId)
         {
@@ -68,12 +82,16 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Failed to remove Collaborator." });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// All Collabs for Note
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Success ,Message ,Data(List of collab)) </returns>
         [HttpGet]
         public async Task<IActionResult> GetAllColaborator(long noteId)
         {
@@ -92,12 +110,14 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Failed to fetch all Collaborator.", data = result });
                 }
             }
-            catch (System.Exception)
-            {
-
-                throw;
-            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        /// <summary>
+        /// Sending Mail for Collab
+        /// </summary>
+        /// <param name="emailModel"> Email </param>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Success ,Message ,Data(Collab Info))</returns>
         [HttpPost("send")]
         public async Task<IActionResult> SendCollabMail(CollabEmailModel emailModel,long noteId)
         {
@@ -115,6 +135,7 @@ namespace FundoNotes.Controllers
                     var endPoint = await bus.GetSendEndpoint(uri);
                     await endPoint.Send(result);
 
+                    // calling SendingMail Function
 
                     SendColabMail colabMail = new SendColabMail();
                     colabMail.EmailService(emailModel.Email);
@@ -125,10 +146,9 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Mail can't be send" });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }

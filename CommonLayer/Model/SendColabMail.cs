@@ -6,8 +6,15 @@ using System.Text;
 
 namespace CommonLayer.Model
 {
+    /// <summary>
+    /// Send Collab Mail
+    /// </summary>
     public class SendColabMail
     {
+        /// <summary>
+        /// Sending email using SMTP
+        /// </summary>
+        /// <param name="email"> Consumer email </param>
         public void EmailService(string email)
         {
             try

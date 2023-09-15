@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace RepoLayer.Service
 {
+    /// <summary>
+    /// Colab Repo Layer
+    /// </summary>
     public class CollabRepo : ICollabRepo
     {
         private readonly IConfiguration configuration;
@@ -22,7 +25,13 @@ namespace RepoLayer.Service
             this.configuration = configuration;
             this.fundoContext = fundoContext;
         }
-
+        /// <summary>
+        /// Adding Collab to Note
+        /// </summary>
+        /// <param name="emailModel"> Collab email </param>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="userId"> User Id </param>
+        /// <returns> Collab Info </returns>
         public async Task<CollabEntity> AddCollab(CollabEmailModel emailModel, long noteId, long userId)
         {
             try
@@ -35,12 +44,19 @@ namespace RepoLayer.Service
                 await fundoContext.SaveChangesAsync();
                 return collabEntity;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Deleting collab from Note
+        /// </summary>
+        /// <param name="collabId"> Collab Id</param>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="userId"> User Id </param>
+        /// <returns> Boolean Value </returns>
         public async Task<bool> DeleteCollab(long collabId,long noteId,long userId)
         {
             try
@@ -57,12 +73,14 @@ namespace RepoLayer.Service
                     return false;
                 }
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        /// <summary>
+        /// List of Collab's for Note
+        /// </summary>
+        /// <param name="noteId"> User Id </param>
+        /// <param name="userId"> Note Id </param>
+        /// <returns> List of Collab </returns>
         public async Task<List<CollabEntity>> GetAllCollabByNoteId(long noteId,long userId)
         {
             try
@@ -70,11 +88,7 @@ namespace RepoLayer.Service
                 List<CollabEntity> user = await fundoContext.Collab.Where(u => u.NoteId == noteId && u.UserId == userId).Include(u => u.User).Include(u => u.Note).ToListAsync();
                 return user;
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
     }
 }

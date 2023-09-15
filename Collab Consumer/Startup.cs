@@ -28,6 +28,9 @@ namespace Collab_Consumer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            // Configure and Adds MassTransit as a messaging framework.
+
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<MailConsumer>();
@@ -48,6 +51,9 @@ namespace Collab_Consumer
                 }));
             });
             services.AddMassTransitHostedService();
+
+            // Configure and Support to controller
+
             services.AddControllers();
         }
 
