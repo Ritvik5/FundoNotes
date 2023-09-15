@@ -19,6 +19,9 @@ using System.Threading.Tasks;
 
 namespace FundoNotes.Controllers
 {
+    /// <summary>
+    /// Note Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class NoteController : ControllerBase
@@ -35,6 +38,11 @@ namespace FundoNotes.Controllers
             this.distributedCache = distributedCache;
             this.fundoContext = fundoContext;
         }
+        /// <summary>
+        /// Create New Note
+        /// </summary>
+        /// <param name="model"> New Note info</param>
+        /// <returns> SMD(Status,Message,Data(Created Note info)) </returns>
         [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateNote(CreateNoteModel model)
@@ -46,7 +54,7 @@ namespace FundoNotes.Controllers
                 var addNote = await noteBusiness.CreateNote(model, userId);
                 if(addNote != null)
                 {
-                    return Ok(new {success = true,message = "Your note has been Created"});
+                    return Ok(new {success = true,message = "Your note has been Created", data = addNote});
                 }
                 else
                 {
@@ -59,6 +67,10 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Getting note for particular User
+        /// </summary>
+        /// <returns> SMD(Status,Message,Data(Note info)) </returns>
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetNoteForParticularUser()
@@ -84,6 +96,12 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Update Note 
+        /// </summary>
+        /// <param name="model"> Updated Note info </param>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Status,Message,Data(Updated Note info)) </returns>
         [Authorize]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateNote(UpdateNoteModel model,long noteId)
@@ -108,6 +126,11 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Remove a Note
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Status,Message,Data) Format </returns>
         [Authorize]
         [HttpDelete]
         public async Task<IActionResult> DeleteNote(long noteId)
@@ -125,8 +148,6 @@ namespace FundoNotes.Controllers
                 {
                     return BadRequest(new { success = false, message = "Note can't be deleted" });
                 }
-                
-                
             }
             catch (Exception ex)
             {
@@ -134,6 +155,11 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// To Mark Note as Archive
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Status, Message , Data(Note Info) </returns>
         [Authorize]
         [HttpPut("Archive")]
         public async Task<IActionResult> ArchiveNote(long noteId)
@@ -145,7 +171,7 @@ namespace FundoNotes.Controllers
                 var archiveNote = await noteBusiness.ArchiveNote(noteId, userId);
                 if(archiveNote != null)
                 {
-                    return Ok(new { success = true, message = "Note has been Archived" });
+                    return Ok(new { success = true, message = "Note has been Archived" ,data = archiveNote});
                 }
                 else
                 {
@@ -158,6 +184,11 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// To Pin a Note
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Status, Message , Data(Note Info) </returns>
         [Authorize]
         [HttpPut("Pin")]
         public async Task<IActionResult> PinNote(long noteId)
@@ -169,11 +200,11 @@ namespace FundoNotes.Controllers
                 var pinNote = await noteBusiness.PinNote(noteId, userId);
                 if(pinNote != null)
                 {
-                    return Ok(new { success = true, message = "Note has been Pinned" });
+                    return Ok(new { success = true, message = "Note has been Pinned" , data = pinNote});
                 }
                 else
                 {
-                    return BadRequest(new { success = false, message = "Something went wrong" });
+                    return BadRequest(new { success = false, message = "Something went wrong"});
                 }
             }
             catch (Exception ex)
@@ -182,6 +213,11 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// To Mark Note as Reminder
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Status, Message , Data(Note Info) </returns>
         [Authorize]
         [HttpPut("Remainder")]
         public async Task<IActionResult> ReminderNote(long noteId)
@@ -193,7 +229,7 @@ namespace FundoNotes.Controllers
                 var reminderNote = await noteBusiness.ReminderNote(noteId,userId);
                 if(reminderNote != null)
                 {
-                    return Ok(new { success = true, message = "Note has been marked as reminder" });
+                    return Ok(new { success = true, message = "Note has been marked as reminder",data = reminderNote });
                 }
                 else
                 {
@@ -206,6 +242,11 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// To Mark Note as Trash
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Status, Message , Data(Note Info) </returns>
         [Authorize]
         [HttpPut("Trash")]
         public async Task<IActionResult> TrashNote(long noteId)
@@ -217,7 +258,7 @@ namespace FundoNotes.Controllers
                 var trashNote = await noteBusiness.TrashNote(noteId, userId);
                 if(trashNote != null) 
                 {
-                    return Ok(new { success = true, message = "Note has been marked Trash" });
+                    return Ok(new { success = true, message = "Note has been marked Trash", data = trashNote });
                 }
                 else
                 {
@@ -230,6 +271,13 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// To change the background colour
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="colour"> Colour name </param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [Authorize]
         [HttpPost("Colour")]
         public async Task<IActionResult> ChangeBackgroundColour(long noteId,string colour)
@@ -241,7 +289,7 @@ namespace FundoNotes.Controllers
                 var backgroundColour = await noteBusiness.BackgroundColour(noteId, userId,colour);
                 if(backgroundColour != null)
                 {
-                    return Ok(new { success = true, message = "Background Colour has been changed." });
+                    return Ok(new { success = true, message = "Background Colour has been changed." , data = backgroundColour});
                 }
                 else
                 {
@@ -254,6 +302,13 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Upload Image
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="image"> Select Image </param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [Authorize]
         [HttpPost("image")]
         public async Task<IActionResult> ImageUpload(long noteId,IFormFile image)
@@ -265,7 +320,7 @@ namespace FundoNotes.Controllers
                 var imageUpload = await noteBusiness.UploadImage(noteId, userId, image);
                 if(imageUpload != null)
                 {
-                    return Ok(new { success = true, message = "Image uploaded sucessfully",data=imageUpload });
+                    return Ok(new { success = true, message = "Image uploaded sucessfully", data=imageUpload });
                 }
                 else
                 {
@@ -278,6 +333,11 @@ namespace FundoNotes.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Get All Note using Redis Cache
+        /// </summary>
+        /// <returns> All Notes of User </returns>
+        [Authorize]
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllNotesUsingRedisCache()
         {
@@ -294,7 +354,8 @@ namespace FundoNotes.Controllers
                 }
                 else
                 {
-                    noteList = await fundoContext.Notes.ToListAsync();
+                    long userId = long.Parse(User.FindFirst("userId").Value);
+                    noteList = (List<NoteEntity>)await noteBusiness.GetAll(userId);
                     serializeNoteList = JsonConvert.SerializeObject(noteList);
                     redisNoteList = Encoding.UTF8.GetBytes(serializeNoteList);
                     var options = new DistributedCacheEntryOptions()

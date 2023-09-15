@@ -13,7 +13,7 @@ namespace RepoLayer.Interface
         Task<NoteEntity> CreateNote(CreateNoteModel model, long userId);
         Task<List<NoteEntity>> GetAll(long userId);
         Task<NoteEntity> UpdateNote(UpdateNoteModel model, long noteId, long userId);
-        Task DeleteNote(long noteId, long userId);
+        Task<bool> DeleteNote(long noteId, long userId);
         Task<NoteEntity> ArchiveNote(long noteId, long userId);
         Task<NoteEntity> PinNote(long noteId, long userId);
         Task<NoteEntity> ReminderNote(long noteId, long userId);

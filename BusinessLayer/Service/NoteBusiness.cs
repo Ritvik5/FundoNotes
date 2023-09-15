@@ -57,11 +57,11 @@ namespace BusinessLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-        public async Task DeleteNote(long noteId, long userId)
+        public async Task<bool> DeleteNote(long noteId, long userId)
         {
             try
             {
-                await noteRepo.DeleteNote(noteId, userId);   
+                return await noteRepo.DeleteNote(noteId, userId);   
             }
             catch (Exception ex)
             {

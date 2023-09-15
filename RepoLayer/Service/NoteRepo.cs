@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace RepoLayer.Service
 {
+    /// <summary>
+    /// Note Repo Layer
+    /// </summary>
     public class NoteRepo : INoteRepo
     {
         private readonly FundoContext fundoContext;
@@ -71,7 +74,11 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-
+        /// <summary>
+        /// Getting all notes for user
+        /// </summary>
+        /// <param name="userId"> User Id of User</param>
+        /// <returns> List of Notes </returns>
         public async Task<List<NoteEntity>> GetAll(long userId)
         {
             try
@@ -84,7 +91,13 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-
+        /// <summary>
+        /// Update Note
+        /// </summary>
+        /// <param name="model"> Update Note Info</param>
+        /// <param name="noteId"> Note id of the Note</param>
+        /// <param name="userId"> User Id</param>
+        /// <returns> Updated Note </returns>
         public async Task<NoteEntity> UpdateNote(UpdateNoteModel model,long noteId,long userId)
         {
             try
@@ -115,13 +128,24 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-        public async Task DeleteNote(long noteId,long userId)
+        /// <summary>
+        /// Delete a Note
+        /// </summary>
+        /// <param name="noteId"> Note Id</param>
+        /// <param name="userId"> User Id</param>
+        /// <returns> Boolean Value </returns>
+        public async Task<bool> DeleteNote(long noteId,long userId)
         {
             try
             {
                 var user = fundoContext.Notes.FirstOrDefault(u => u.NoteId == noteId && u.UserId == userId);
-                fundoContext.Notes.Remove(user);
-                await fundoContext.SaveChangesAsync();
+                if(user != null)
+                {
+                    fundoContext.Notes.Remove(user);
+                    await fundoContext.SaveChangesAsync();
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -129,6 +153,12 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Marking Note to Archive
+        /// </summary>
+        /// <param name="noteId"> Note Id</param>
+        /// <param name="userId"> User Id</param>
+        /// <returns> Note Info</returns>
         public async Task<NoteEntity> ArchiveNote(long noteId,long userId)
         {
             try
@@ -139,13 +169,15 @@ namespace RepoLayer.Service
                     if(user.IsArchive == false)
                     {
                         user.IsArchive = true;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
                     else
                     {
                         user.IsArchive = false;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
-                    await fundoContext.SaveChangesAsync();
-                    return await fundoContext.Notes.Where(n => n.NoteId == noteId).FirstOrDefaultAsync();
                 }
                 else
                 {
@@ -158,6 +190,12 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Mark Note to Pinned
+        /// </summary>
+        /// <param name="noteId"> Note Id</param>
+        /// <param name="userId"> User Id</param>
+        /// <returns> Note info</returns>
         public async Task<NoteEntity> PinNote(long noteId,long userId)
         {
             try
@@ -168,18 +206,20 @@ namespace RepoLayer.Service
                     if(user.IsPin == false)
                     {
                         user.IsPin = true;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
                     else
                     {
                         user.IsPin = false;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
                 }
                 else
                 {
                     return null;
                 }
-                await fundoContext.SaveChangesAsync();
-                return await fundoContext.Notes.Where(n => n.NoteId==noteId).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -187,6 +227,12 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Marked note to reminder
+        /// </summary>
+        /// <param name="noteId"> Note Id</param>
+        /// <param name="userId"> User Id</param>
+        /// <returns> Note Info</returns>
         public async Task<NoteEntity> ReminderNote(long noteId,long userId)
         {
             try
@@ -197,13 +243,15 @@ namespace RepoLayer.Service
                     if (user.IsReminder == false)
                     {
                         user.IsReminder = true;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
                     else
                     {
                         user.IsReminder = false;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
-                    await fundoContext.SaveChangesAsync();
-                    return await fundoContext.Notes.Where(u => u.NoteId == noteId).FirstOrDefaultAsync();
                 }
                 else
                 {
@@ -216,6 +264,13 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Mark Note to Trash
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="userId"> User Id </param>
+        /// <returns> Note Info </returns>
+        /// <exception cref="Exception"></exception>
         public async Task<NoteEntity> TrashNote(long noteId,long userId)
         {
             try
@@ -226,18 +281,20 @@ namespace RepoLayer.Service
                     if(user.IsTrash == false)
                     {
                         user.IsTrash = true;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
                     else
                     {
                         user.IsTrash = false;
+                        await fundoContext.SaveChangesAsync();
+                        return user;
                     }
                 }
                 else
                 {
                     return null;
                 }
-                await fundoContext.SaveChangesAsync();
-                return await fundoContext.Notes.Where(n => n.NoteId == noteId).FirstOrDefaultAsync(); 
             }
             catch (Exception ex)
             {
@@ -245,6 +302,13 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Change the background colour of Note
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="userId"> User Id </param>
+        /// <param name="colour"> Colour </param>
+        /// <returns> Note Info </returns>
         public async Task<NoteEntity> BackgroundColour(long noteId,long userId,string colour)
         {
             try
@@ -253,13 +317,14 @@ namespace RepoLayer.Service
                 if (user != null)
                 {
                     user.BGColor = colour;
+                    user.UpdatedTime = DateTime.Now;
+                    await fundoContext.SaveChangesAsync();
+                    return user;
                 }
                 else
                 {
                     return null;
                 }
-                await fundoContext.SaveChangesAsync();
-                return await fundoContext.Notes.Where(n => n.NoteId==noteId).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -267,6 +332,13 @@ namespace RepoLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Upload Image
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="userId"> User Id </param>
+        /// <param name="image">  Select Image </param>
+        /// <returns> Message and Image Url </returns>
         public async Task<string> UploadImage(long noteId,long userId, IFormFile image)
         {
             try

@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace RepoLayer.Service
 {
+    /// <summary>
+    /// User Repo Layer
+    /// </summary>
     public class UserRepo : IUserRepo
     {
         private readonly FundoContext fundoContext;
