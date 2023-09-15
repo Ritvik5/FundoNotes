@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace RepoLayer.Service
 {
+    /// <summary>
+    /// Label Repo Layer
+    /// </summary>
     public class LabelRepo : ILabelRepo
     { 
         private readonly IConfiguration configuration;
@@ -20,6 +23,13 @@ namespace RepoLayer.Service
             this.configuration = configuration;
             this.fundoContext = fundoContext;
         }
+        /// <summary>
+        /// Add Label to Note
+        /// </summary>
+        /// <param name="labelName"> label name </param>
+        /// <param name="noteId"> Note Id </param>
+        /// <param name="userId"> User Id </param>
+        /// <returns> Label Info </returns>
         public async Task<LabelEntity> AddLabel(string labelName,long noteId,long userId)
         {
             try
@@ -36,12 +46,19 @@ namespace RepoLayer.Service
                 await fundoContext.SaveChangesAsync();
                 return label;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Update Label 
+        /// </summary>
+        /// <param name="labelName"> Label Name </param>
+        /// <param name="userId"> User Id </param>
+        /// <param name="labelId"> Label Id </param>
+        /// <returns> Label Info </returns>
         public async Task<LabelEntity> UpdateLabel(string labelName,long userId,long labelId)
         {
             try
@@ -58,12 +75,18 @@ namespace RepoLayer.Service
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Delete Label 
+        /// </summary>
+        /// <param name="labelId"> Label Id </param>
+        /// <param name="userId"> User Id </param>
+        /// <returns> Boolean Value </returns>
+        /// <exception cref="Exception"></exception>
         public async Task DeleteLabel(long labelId,long userId)
         {
             try
@@ -75,12 +98,13 @@ namespace RepoLayer.Service
                     await fundoContext.SaveChangesAsync();
                 }
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        /// <summary>
+        /// Get all Label of User
+        /// </summary>
+        /// <param name="userId"> User Id </param>
+        /// <returns> Label Info </returns>
         public async Task<List<LabelEntity>> GetLabel(long userId)
         {
             try
@@ -88,12 +112,13 @@ namespace RepoLayer.Service
                 List<LabelEntity> label = await fundoContext.Label.Where(u => u.UserId == userId).Include(u => u.User).Include(n => n.Note).ToListAsync();
                 return label;
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        /// <summary>
+        /// Get all Label for a Note
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> Label Info </returns>
         public async Task<List<LabelEntity>> GetLabelByNoteId(long noteId)
         {
             try
@@ -101,10 +126,9 @@ namespace RepoLayer.Service
                 List<LabelEntity> labelByNoteId = await fundoContext.Label.Where(u => u.NoteId == noteId).Include(u => u.User).Include(n=>n.Note).ToListAsync();
                 return labelByNoteId;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }

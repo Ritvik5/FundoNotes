@@ -4,11 +4,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepoLayer.Context;
 using RepoLayer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FundoNotes.Controllers
 {
+    /// <summary>
+    /// Label Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class LabelController : ControllerBase
@@ -20,6 +24,12 @@ namespace FundoNotes.Controllers
             this.labelBusiness = labelBusiness;
             this.fundoContext = fundoContext;
         }
+        /// <summary>
+        /// Add label 
+        /// </summary>
+        /// <param name="labelName"> Label Name </param>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> SMD(Success, Message, Data(Label Info)) </returns>
         [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> AddLabel(string labelName,long noteId)
@@ -38,12 +48,17 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Failed to add label", data = addLabel });
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex )
             {
-
-                throw;
+                throw new Exception(ex.Message) ;
             }
         }
+        /// <summary>
+        /// Update Label 
+        /// </summary>
+        /// <param name="labelName"> Label Name </param>
+        /// <param name="labelId"> Label Id </param>
+        /// <returns> SMD(Success, Message, Data(Updated Label Info)) </returns>
         [Authorize]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateLabel(string labelName, long labelId)
@@ -62,12 +77,13 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Failed to update label", data = updateLabel });
                 }
             }
-            catch (System.Exception)
-            {
-
-                throw;
-            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        /// <summary>
+        /// Delete Label
+        /// </summary>
+        /// <param name="labelId"> Label Id</param>
+        /// <returns> SMD(Success, Message, Data(Boolean Value))</returns>
         [Authorize]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteLabel(long labelId)
@@ -86,12 +102,12 @@ namespace FundoNotes.Controllers
                     return BadRequest(new { success = false, message = "Failed to delete label" });
                 }
             }
-            catch (System.Exception)
-            {
-
-                throw;
-            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
         }
+        /// <summary>
+        /// All Labels by User.
+        /// </summary>
+        /// <returns> List of All Label for User</returns>
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetLabel()
@@ -108,12 +124,16 @@ namespace FundoNotes.Controllers
                 }
                 else { return BadRequest(new { success = false, message = "Failed to fetch label" }); }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// All Labels by Note.
+        /// </summary>
+        /// <param name="noteId"> Note Id </param>
+        /// <returns> List of All Label for a Note</returns>
         [Authorize]
         [HttpGet("noteId")]
         public async Task<IActionResult> GetLabelByNoteId(long noteId)
@@ -128,10 +148,9 @@ namespace FundoNotes.Controllers
                 }
                 else { return BadRequest(new { success = false, message = "Failed to fetch label" }); }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }
